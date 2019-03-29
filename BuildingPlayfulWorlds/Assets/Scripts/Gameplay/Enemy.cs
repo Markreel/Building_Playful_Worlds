@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] Vector2 speed = new Vector2(7, 15);
     [SerializeField] float maxFollowingDistance = 50;
     [SerializeField] float damageAmount = 5;
+    [SerializeField] float healthAmount = 50;
 
     //JumpSettings
     [SerializeField] float jumpHeight = 2;
@@ -22,6 +23,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] bool isFollowingPlayer;
     [SerializeField] int followerAmount;
     [SerializeField] float damageMultiplier = 1.5f;
+    [SerializeField] float healthMultiplier = 1.5f;
     [SerializeField] float wanderingStepTime = 5;
     float defaultWanderingStepTime;
     bool playerFound = false;
@@ -61,6 +63,8 @@ public class Enemy : MonoBehaviour
 
         defaultWanderingStepTime = wanderingStepTime;
         wanderingStepTime = 0;
+
+        healthAmount = MultiplyHealth();
     }
 
     private void Start()
@@ -178,7 +182,6 @@ public class Enemy : MonoBehaviour
         if (attackRoutine != null) StopCoroutine(attackRoutine);
         attackRoutine = StartCoroutine(IAttack());
     }
-
     void StartRunning()
     {
         currentState = States.Running;
@@ -186,8 +189,14 @@ public class Enemy : MonoBehaviour
         agent.isStopped = false;
     }
 
-
-    float MultiplyDamage()
+    float MultiplyHealth()
+    {
+        if (isLeader)
+            return healthAmount * healthMultiplier;
+        else
+            return healthAmount;
+    }
+    float MultiplyDamageAmount()
     {
         if (isLeader)
             return damageAmount * damageMultiplier;
@@ -201,11 +210,10 @@ public class Enemy : MonoBehaviour
 
         while (anim.GetBool("isAttacking"))
         {
-            Debug.Log("attackingWhileLoop");
             yield return null;
         }
 
-        PlayerObject.GetComponent<FirstPersonController>().TakeDamage(MultiplyDamage());
+        PlayerObject.GetComponent<FirstPersonController>().TakeDamage(MultiplyDamageAmount());
 
         if (CheckIfInAttackingRange())
             StartAttacking();
@@ -215,6 +223,24 @@ public class Enemy : MonoBehaviour
             StartRunning();
         }
         yield return null;
+    }
+
+    public void TakeDamage(float _amount)
+    {
+        healthAmount -= _amount;
+        if (isDead())
+            Die();
+    }
+    bool isDead()
+    {
+        if (healthAmount <= 0)
+            return true;
+        else
+            return false;
+    }
+    void Die()
+    {
+        Destroy(gameObject);
     }
 
     private void RotateTowardsTarget()
@@ -260,8 +286,11 @@ public class Enemy : MonoBehaviour
 
             GameObject _obj = Instantiate(followerPrefab, _randomPos, followerPrefab.transform.rotation, transform.parent);
 
-            _obj.GetComponent<Enemy>().LeaderObject = gameObject;
-            _obj.GetComponent<Enemy>().PlayerObject = PlayerObject;
+            Enemy _e = _obj.GetComponent<Enemy>();
+
+            _e.LeaderObject = gameObject;
+            _e.PlayerObject = PlayerObject;
+            _e.spawnMesh = spawnMesh;
         }
     }
 
@@ -273,7 +302,7 @@ public class Enemy : MonoBehaviour
             ChangeAnimation(States.Wandering);
         }
 
-        if (isLeader)
+        if (isLeader || LeaderObject == null)
         {
             if (wanderingStepTime <= 0)
             {
@@ -288,6 +317,17 @@ public class Enemy : MonoBehaviour
         else
         {
             agent.destination = LeaderObject.transform.position;
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        Projectile _projectile = other.GetComponent<Projectile>();
+
+        if (_projectile != null)
+        {
+            TakeDamage(_projectile.DamageAmount);
+            Destroy(_projectile);
         }
     }
 }

@@ -34,8 +34,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
         [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
         [SerializeField] private ParticleSystem flamethrowerPS;
-        [SerializeField] private UnityEngine.UI.Image healthImage;
-        [SerializeField] private UnityEngine.UI.Image bgHealthImage;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -99,16 +97,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_PreviouslyGrounded = m_CharacterController.isGrounded;
         }
 
-        void UpdateHealthUI()
-        {
-            healthImage.fillAmount = 1 / maxHealth * health;
-            bgHealthImage.fillAmount = 1 - (1 / maxHealth * health);
-        }
-
         public void TakeDamage(float _damage)
         {
             health -= _damage;
-            UpdateHealthUI();
+            UIManager.Instance.UpdateHealth(health, maxHealth);
         }
 
         private void PlayLandingSound()

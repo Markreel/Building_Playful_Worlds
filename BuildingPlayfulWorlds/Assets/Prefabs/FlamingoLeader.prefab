@@ -222,11 +222,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8518427290412528616}
   - component: {fileID: 8518427290412528618}
-  - component: {fileID: 8518427290412528619}
   - component: {fileID: 8518427290412528533}
   - component: {fileID: 8518427290412528532}
   - component: {fileID: 8843002355109836480}
   - component: {fileID: 8843002355109836481}
+  - component: {fileID: 1098575942163166789}
   m_Layer: 0
   m_Name: FlamingoLeader
   m_TagString: Untagged
@@ -266,21 +266,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!136 &8518427290412528619
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8518427290412528617}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  m_Radius: 0.5
-  m_Height: 1.33
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.87, z: 0}
+  m_CollisionDetection: 1
 --- !u!195 &8518427290412528533
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -318,9 +304,14 @@ MonoBehaviour:
   rotationSpeed: 10
   speed: {x: 7, y: 15}
   maxFollowingDistance: 10
+  damageAmount: 5
+  healthAmount: 50
+  jumpHeight: 2
   isLeader: 1
   isFollowingPlayer: 0
   followerAmount: 5
+  damageMultiplier: 1.5
+  healthMultiplier: 1.5
   wanderingStepTime: 5
   PlayerObject: {fileID: 0}
   followerPrefab: {fileID: 904994512584803630, guid: 8eadf8e1e9a06e045822bdcd699e023a,
@@ -5021,6 +5012,20 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!136 &1098575942163166789
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8518427290412528617}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.61
+  m_Height: 1.19
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.99999994, z: 0}
 --- !u!1001 &8518427290253981452
 PrefabInstance:
   m_ObjectHideFlags: 0
