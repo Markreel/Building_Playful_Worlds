@@ -29,6 +29,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         [SerializeField] private float health;
         private float maxHealth;
 
+        [SerializeField] TowerManager towerManager;
+
 
         [SerializeField] private AudioClip[] m_FootstepSounds;    // an array of footstep sounds that will be randomly selected from.
         [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
@@ -65,8 +67,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             maxHealth = health;
         }
 
-
-        // Update is called once per frame
         private void Update()
         {
             RotateView();
@@ -101,6 +101,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             health -= _damage;
             UIManager.Instance.UpdateHealth(health, maxHealth);
+
+            CheckDeath();
+        }
+        void CheckDeath()
+        {
+            if(health <= 0)
+            {
+                GameManager.Instance.GameOver();
+            }
         }
 
         private void PlayLandingSound()
@@ -273,6 +282,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 return;
             }
             body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            towerManager.CheckTriggers(other.gameObject);
         }
     }
 }

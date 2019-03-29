@@ -14,12 +14,24 @@ public class UIManager : MonoBehaviour
     [SerializeField] [Range(0,1)] float lerpDuration;
     Coroutine LerpHealthbarRoutine;
 
+    [Space]
+
+    [SerializeField]
+    GameObject gameOverCanvas;
+    [SerializeField]
+    GameObject victoryCanvas;
+
 
     void Awake()
     {
-        Instance = Instance ?? this;   
+        Instance = this;   
     }
 
+    /// <summary>
+    /// Updates the health text and starts lerping the healthbar
+    /// </summary>
+    /// <param name="_newHealth"></param>
+    /// <param name="_maxHealth"></param>
     public void UpdateHealth(float _newHealth, float _maxHealth)
     {
         healthText.text =  ((int)_newHealth).ToString();
@@ -32,6 +44,11 @@ public class UIManager : MonoBehaviour
         if (LerpHealthbarRoutine != null) StopCoroutine(LerpHealthbarRoutine);
         LerpHealthbarRoutine = StartCoroutine(ILerpHealthbar(_newHealth));
     }
+    /// <summary>
+    /// Smoothly animates the change in health over the healthbar
+    /// </summary>
+    /// <param name="_newHealth"></param>
+    /// <returns></returns>
     IEnumerator ILerpHealthbar(float _newHealth)
     {
         float _currentHealth = healthImage.fillAmount;
@@ -48,5 +65,16 @@ public class UIManager : MonoBehaviour
         }
 
         yield return null;
+    }
+
+    //Opens the game over canvas
+    public void OpenGameOverCanvas()
+    {
+        gameOverCanvas.SetActive(true);
+    }
+    //Opens the victory canvas
+    public void OpenVictoryCanvas()
+    {
+        victoryCanvas.SetActive(true);
     }
 }

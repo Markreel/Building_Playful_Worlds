@@ -213,10 +213,12 @@ public class Enemy : MonoBehaviour
             yield return null;
         }
 
-        PlayerObject.GetComponent<FirstPersonController>().TakeDamage(MultiplyDamageAmount());
 
         if (CheckIfInAttackingRange())
+        {
+            PlayerObject.GetComponent<FirstPersonController>().TakeDamage(MultiplyDamageAmount());
             StartAttacking();
+        }
         else
         {
 
